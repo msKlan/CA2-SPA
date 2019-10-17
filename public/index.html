@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h2>Front end CA-2 Phone</h2>
+    Number: <input id="number" type="text">
+    Description: <input id="description" type="text">
+    <button onclick="phoneAdd();">Add</button>
+
+    <button id="getAll">Get All</button>
+    <div id="phone">
+    </div>
+
+    <hr>
+
+    <div id="phoneByID">
+    </div>
+  </div>
+  <script src="bundle.js"></script>
+
+  <script>
+    function getPhoneByID(id) {
+      console.log(id);
+    
+      var t;
+      fetch('http://localhost:8080/CA-2/api/phone/id/' + id).then
+        ((response) => {
+          return response.json();
+        } )
+      .then 
+        ((data) => {
+          console.log(data);
+          t = "<table class=\"table table-striped\">";
+          t = t + "<thead>";
+          t = t + "  <tr>";
+          t = t + "    <th>ID</th>";
+          t = t + "    <th>Number</th>";
+          t = t + "    <th>Description</th>";
+          t = t + "  </tr>";
+          t = t + "</thead>";
+          t = t + "<tbody>";
+          t = t + "<tr><td>" + data.id + "</td><td>" + data.number + "</td><td>" + data.description + "</td></tr>"; 
+          t = t + "</tbody></table>";
+
+          document.getElementById("phoneByID").innerHTML = t; 
+        } );    
+    }
+
+
+    function phoneAdd() {
+      var n = document.getElementById("number").value;
+      var d = document.getElementById("description").value;
+
+      fetch('http://localhost:8080/CA-2/api/phone/add', {
+        method: 'post',
+        body: JSON.stringify({
+          "number": n,
+          "description": d
+        })
+      }).then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+      });      
+      alert("Phone added");
+    }
+
+    function phoneDelete(id) {
+      fetch('http://localhost:8080/CA-2/api/phone/delete/' + id, {
+        method: 'delete'
+      }).then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+      });      
+      alert("Phone deleted");      
+    }
+
+  </script>
+</body>
+
+</html>
